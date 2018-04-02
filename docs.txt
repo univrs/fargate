@@ -15,7 +15,7 @@ v1: digest: sha256:ac5ffbb0bd31fb19c5274d20a4c2b2fa558a370e84c671b7daf2906a3f53c
 
 4. Run CF cli
 
-aws cloudformation deploy --stack-name=production --template-file=recipes/public-vpc.yml --capabilities=CAPABILITY_IAM
+aws cloudformation deploy --stack-name=production --template-file=recipes/global.yml --capabilities=CAPABILITY_IAM
 
 root@ardeshir /socket.io-chat-fargate (4-scaling) $ docker build -t chat .
 Sending build context to Docker daemon  312.8kB
