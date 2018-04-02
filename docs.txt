@@ -1,0 +1,53 @@
+1. login to ECS
+`aws ecr get-login --no-include-email --region us-east-1 --profile admin`
+Login successful
+
+2. Retag chat
+docker tag chat:latest 446537445619.dkr.ecr.us-east-1.amazonaws.com/chat:v1
+
+3. Push 
+ docker push 446537445619.dkr.ecr.us-east-1.amazonaws.com/chat:v1
+The push refers to a repository [446537445619.dkr.ecr.us-east-1.amazonaws.com/chat]
+61750ec82cb6: Pushed 
+d276d260c1a8: Pushed 
+cd7100a72410: Pushed 
+v1: digest: sha256:ac5ffbb0bd31fb19c5274d20a4c2b2fa558a370e84c671b7daf2906a3f53c0af size: 951
+
+4. Run CF cli
+
+aws cloudformation deploy --stack-name=production --template-file=recipes/public-vpc.yml --capabilities=CAPABILITY_IAM
+
+root@ardeshir /socket.io-chat-fargate (4-scaling) $ docker build -t chat .
+Sending build context to Docker daemon  312.8kB
+Step 1/9 : FROM mhart/alpine-node:9 AS build
+ ---> d31adccfa719
+Step 2/9 : WORKDIR /srv
+ ---> Using cache
+ ---> 4cd099377eee
+Step 3/9 : ADD package.json .
+ ---> Using cache
+ ---> 400091673beb
+Step 4/9 : RUN npm install
+ ---> Using cache
+ ---> 98455eaf2340
+Step 5/9 : ADD . .
+ ---> Using cache
+ ---> 15fee4be905c
+Step 6/9 : FROM mhart/alpine-node:base-9
+ ---> 14f897186282
+Step 7/9 : COPY --from=build /srv .
+ ---> Using cache
+ ---> 00133ed7aa96
+Step 8/9 : EXPOSE 3000
+ ---> Using cache
+ ---> a94871e9d865
+Step 9/9 : CMD node index.js
+ ---> Using cache
+ ---> 90fb1c17b0ec
+Successfully built 90fb1c17b0ec
+Successfully tagged chat:latest
+
+$ docker tag chat:latest 446537445619.dkr.ecr.us-east-1.amazonaws.com/chat:v2
+$ `aws ecr get-login --no-include-email --region us-east-1 --profile admin`
+Login Succeeded
+$ docker push 446537445619.dkr.ecr.us-east-1.amazonaws.com/chat:v2
